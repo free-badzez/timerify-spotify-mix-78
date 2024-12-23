@@ -1,19 +1,20 @@
-import React from 'react';
+import { useState } from 'react';
 
 const SpotifyEmbed = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (!isVisible) return null;
+
   return (
-    <div className="w-full max-w-2xl mx-auto p-6">
-      <div className="backdrop-blur-lg bg-white/30 rounded-2xl p-8 shadow-xl">
-        <h2 className="text-2xl font-bold mb-6 text-timer-purple">Workout Playlist</h2>
-        <iframe
-          src="https://open.spotify.com/embed/playlist/4d3PqXgP9C9GhdmHsuztXx"
-          width="100%"
-          height="352"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-          className="rounded-xl"
-        />
-      </div>
+    <div className="w-full max-w-sm mx-auto fixed bottom-4 left-4">
+      <iframe
+        src="https://open.spotify.com/embed/playlist/4d3PqXgP9C9GhdmHsuztXx?theme=1"
+        width="100%"
+        height="152"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        className="rounded-xl bg-black/20 backdrop-blur-lg"
+      />
     </div>
   );
 };

@@ -1,119 +1,86 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { PlayCircle, PauseCircle, RotateCcw, Timer as TimerIcon } from 'lucide-react';
+import { Play, RotateCcw } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 
 const Timer = () => {
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(25 * 60); // 25 minutes in seconds
   const [isRunning, setIsRunning] = useState(false);
-  const [laps, setLaps] = useState<number[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isRunning) {
+    if (isRunning && time > 0) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
+        setTime((prevTime) => {
+          if (prevTime <= 1) {
+            setIsRunning(false);
+            toast({
+              title: "Timer Complete",
+              description: "Time to take a break!",
+            });
+            return 0;
+          }
+          return prevTime - 1;
+        });
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning]);
+  }, [isRunning, time, toast]);
 
   const formatTime = useCallback((timeInSeconds: number) => {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes
-      .toString()
-      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
   const handleStartStop = () => {
     setIsRunning(!isRunning);
     toast({
       title: !isRunning ? "Timer Started" : "Timer Paused",
-      description: !isRunning ? "Your timer is now running" : "Your timer has been paused",
+      description: !isRunning ? "Stay focused!" : "Timer has been paused",
     });
   };
 
   const handleReset = () => {
     setIsRunning(false);
-    setTime(0);
-    setLaps([]);
+    setTime(25 * 60);
     toast({
       title: "Timer Reset",
-      description: "Your timer has been reset to zero",
-    });
-  };
-
-  const handleLap = () => {
-    setLaps((prevLaps) => [...prevLaps, time]);
-    toast({
-      title: "Lap Recorded",
-      description: `Lap ${laps.length + 1}: ${formatTime(time)}`,
+      description: "Timer has been reset to 25:00",
     });
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6">
-      <div className="backdrop-blur-lg bg-white/30 rounded-2xl p-8 shadow-xl">
-        <div className="text-7xl font-bold text-center mb-8 font-mono text-timer-purple">
-          {formatTime(time)}
-        </div>
+    <div className="text-center">
+      <div className="text-[8rem] font-light text-white mb-8 font-mono tracking-wider">
+        {formatTime(time)}
+      </div>
+      
+      <div className="flex justify-center gap-4">
+        <Button
+          size="lg"
+          onClick={handleStartStop}
+          className="bg-white text-black hover:bg-white/90 rounded-full px-8"
+        >
+          {isRunning ? (
+            "pause"
+          ) : (
+            <>
+              <Play className="mr-2 h-4 w-4" />
+              start
+            </>
+          )}
+        </Button>
         
-        <div className="flex justify-center gap-4 mb-8">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleStartStop}
-            className="w-32 h-12 text-lg"
-          >
-            {isRunning ? (
-              <PauseCircle className="mr-2 h-5 w-5" />
-            ) : (
-              <PlayCircle className="mr-2 h-5 w-5" />
-            )}
-            {isRunning ? "Pause" : "Start"}
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleReset}
-            className="w-32 h-12 text-lg"
-          >
-            <RotateCcw className="mr-2 h-5 w-5" />
-            Reset
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleLap}
-            disabled={!isRunning}
-            className="w-32 h-12 text-lg"
-          >
-            <TimerIcon className="mr-2 h-5 w-5" />
-            Lap
-          </Button>
-        </div>
-
-        {laps.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4 text-timer-purple">Lap Times</h3>
-            <div className="space-y-2">
-              {laps.map((lapTime, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center py-2 px-4 bg-white/50 rounded-lg"
-                >
-                  <span className="font-medium">Lap {index + 1}</span>
-                  <span className="font-mono">{formatTime(lapTime)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={handleReset}
+          className="text-white hover:bg-white/10"
+        >
+          <RotateCcw className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
