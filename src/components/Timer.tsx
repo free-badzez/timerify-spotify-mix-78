@@ -1,12 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { Play, RotateCcw } from 'lucide-react';
+import { Play, RotateCcw, Timer as TimerIcon } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 
-const Timer = () => {
-  const [time, setTime] = useState(25 * 60); // 25 minutes in seconds
+interface TimerProps {
+  mode: 'pomodoro' | 'shortBreak' | 'longBreak';
+}
+
+const Timer = ({ mode }: TimerProps) => {
+  const getInitialTime = () => {
+    switch (mode) {
+      case 'shortBreak':
+        return 5 * 60; // 5 minutes
+      case 'longBreak':
+        return 15 * 60; // 15 minutes
+      default:
+        return 25 * 60; // 25 minutes
+    }
+  };
+
+  const [time, setTime] = useState(getInitialTime());
   const [isRunning, setIsRunning] = useState(false);
+  const [laps, setLaps] = useState<string[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setTime(getInitialTime());
+    setIsRunning(false);
+  }, [mode]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -44,10 +65,19 @@ const Timer = () => {
 
   const handleReset = () => {
     setIsRunning(false);
-    setTime(25 * 60);
+    setTime(getInitialTime());
+    setLaps([]);
     toast({
       title: "Timer Reset",
-      description: "Timer has been reset to 25:00",
+      description: "Timer has been reset",
+    });
+  };
+
+  const handleLap = () => {
+    setLaps((prevLaps) => [...prevLaps, formatTime(time)]);
+    toast({
+      title: "Lap Recorded",
+      description: `Lap time: ${formatTime(time)}`,
     });
   };
 
@@ -76,12 +106,34 @@ const Timer = () => {
         <Button
           size="icon"
           variant="ghost"
+          onClick={handleLap}
+          className="text-white hover:bg-white/10"
+        >
+          <TimerIcon className="h-4 w-4" />
+        </Button>
+
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={handleReset}
           className="text-white hover:bg-white/10"
         >
           <RotateCcw className="h-4 w-4" />
         </Button>
       </div>
+
+      {laps.length > 0 && (
+        <div className="mt-8 text-white/80">
+          <h3 className="text-sm font-medium mb-2">Laps</h3>
+          <div className="space-y-1">
+            {laps.map((lap, index) => (
+              <div key={index} className="text-sm">
+                Lap {index + 1}: {lap}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
