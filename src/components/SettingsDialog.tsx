@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useToast } from "@/components/ui/use-toast";
+import SoundSettings from "./SoundSettings";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -248,6 +249,8 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               </div>
             </div>
           </div>
+
+          <SoundSettings />
 
           <div className="flex justify-between pt-4">
             <Button

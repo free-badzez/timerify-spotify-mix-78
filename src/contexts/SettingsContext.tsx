@@ -26,6 +26,8 @@ interface SettingsContextType {
   setTimerDurations: (durations: { pomodoro: number; shortBreak: number; longBreak: number }) => void;
   spotifyPlaylistUrl: string;
   setSpotifyPlaylistUrl: (url: string) => void;
+  alertSound: string;
+  setAlertSound: (sound: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -44,6 +46,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     longBreak: 15
   });
   const [spotifyPlaylistUrl, setSpotifyPlaylistUrl] = useState('4d3PqXgP9C9GhdmHsuztXx');
+  const [alertSound, setAlertSound] = useState('bell');
 
   return (
     <SettingsContext.Provider
@@ -66,6 +69,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setTimerDurations,
         spotifyPlaylistUrl,
         setSpotifyPlaylistUrl,
+        alertSound,
+        setAlertSound,
       }}
     >
       {children}
