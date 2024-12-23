@@ -61,7 +61,7 @@ const IndexContent = () => {
       <div className="container py-8 px-4 relative z-10">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold opacity-90">
-            studywith<span className="font-light">me.io</span>
+            study<span className="font-light">TimerApp</span>
           </h1>
           <div className="flex items-center gap-2">
             <Button
