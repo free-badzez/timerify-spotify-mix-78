@@ -96,16 +96,18 @@ const Timer = ({ mode }: TimerProps) => {
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
+        fontWeight: 'bold',
       }
     : {
         fontFamily,
         color: fontColor,
+        fontWeight: 'bold',
       };
 
   return (
     <div className="text-center">
       <div 
-        className="text-[8rem] font-light mb-8 font-mono tracking-wider"
+        className="text-[8rem] font-light mb-8 font-mono tracking-wider font-bold"
         style={textStyle}
       >
         {formatTime(time)}
