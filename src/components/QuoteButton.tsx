@@ -39,18 +39,19 @@ const QuoteButton = () => {
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
+        color: "black", // Explicitly set color to black
       }
     : {
         fontFamily,
-        color: fontColor || "black", // Default to black if no fontColor is set
+        color: "black", // Ensure color is always black
       };
 
   return (
     <Button
       onClick={showNewQuote}
       variant="outline"
-      className="fixed bottom-4 right-[94px] h-8 px-2 gap-1" // Adjusted right margin
-      style={{ ...textStyle, color: "black" }} // Explicitly set font color to black
+      className="fixed bottom-4 right-[94px] h-8 px-2 gap-1"
+      style={textStyle}
     >
       <Quote className="h-4 w-4" />
       Quote
@@ -58,5 +59,5 @@ const QuoteButton = () => {
   );
 };
 
-
 export default QuoteButton;
+
