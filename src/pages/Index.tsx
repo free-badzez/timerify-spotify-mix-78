@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Timer from "@/components/Timer";
-import SpotifyEmbed from "@/components/SpotifyEmbed";
-import { Settings, Volume2, Trees, Cloud } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import TimerModeSelector from "@/components/TimerModeSelector";
-import SettingsDialog from "@/components/SettingsDialog";
-import { useToast } from "@/components/ui/use-toast";
-import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
-import QuoteButton from "@/components/QuoteButton";
-import ControlButtons from "@/components/ControlButtons";
+import Timer from "@/components/Timer";  // Your Timer component
+import SpotifyEmbed from "@/components/SpotifyEmbed";  // Spotify embed component
+import { Settings, Volume2, Trees, Cloud } from "lucide-react";  // Icon components
+import { Button } from "@/components/ui/button";  // Button component
+import TimerModeSelector from "@/components/TimerModeSelector";  // Timer mode selector
+import SettingsDialog from "@/components/SettingsDialog";  // Settings dialog component
+import { useToast } from "@/components/ui/use-toast";  // Toast component
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";  // Context for global settings
+import QuoteButton from "@/components/QuoteButton";  // Quote button component
+import ControlButtons from "@/components/ControlButtons";  // Control buttons component
 
 const IndexContent = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -17,9 +17,9 @@ const IndexContent = () => {
   const { toast } = useToast();
   const { background, backgroundType, fontColor, fontFamily } = useSettings();
 
-  // Add audio functionality
+  // Define audio files from public folder
   const sounds = {
-    waves: new Audio("/audio/waves.mp3"), // Replace with your actual audio file paths
+    waves: new Audio("/audio/waves.mp3"),
     forest: new Audio("/audio/forest.mp3"),
     rain: new Audio("/audio/rain.mp3"),
   };
@@ -29,24 +29,37 @@ const IndexContent = () => {
     sound.loop = true;
   });
 
+  const stopAllSounds = () => {
+    // Stop all sounds
+    Object.values(sounds).forEach((sound) => {
+      sound.pause();
+      sound.currentTime = 0;
+    });
+    setActiveSound(null);
+  };
+
   const handleSoundToggle = (sound: string) => {
+    const audio = sounds[sound];
+
+    // Check if the audio is loaded
+    audio.addEventListener("loadeddata", () => {
+      console.log(`${sound} is loaded`);
+    });
+
     if (activeSound === sound) {
       // Stop the currently active sound
-      sounds[sound].pause();
-      sounds[sound].currentTime = 0; // Reset playback to the start
+      audio.pause();
+      audio.currentTime = 0; // Reset playback to the start
       setActiveSound(null);
       toast({
         title: "Sound stopped",
         description: `${sound} sound has been stopped`,
       });
     } else {
-      // Stop any currently playing sound
-      if (activeSound) {
-        sounds[activeSound].pause();
-        sounds[activeSound].currentTime = 0;
-      }
+      // Stop all sounds if any other sound is playing
+      stopAllSounds();
       // Play the selected sound
-      sounds[sound].play();
+      audio.play();
       setActiveSound(sound);
       toast({
         title: "Sound playing",
@@ -62,7 +75,7 @@ const IndexContent = () => {
     : { backgroundImage: 'linear-gradient(to bottom right, #2B1055, #7597DE)' };
 
   return (
-    <div 
+    <div
       className="min-h-screen relative"
       style={{
         ...backgroundStyle,
@@ -90,9 +103,7 @@ const IndexContent = () => {
               variant="ghost"
               size="icon"
               onClick={() => handleSoundToggle('waves')}
-              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${
-                activeSound === 'waves' ? 'bg-white/20' : ''
-              }`}
+              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${activeSound === 'waves' ? 'bg-white/20' : ''}`}
             >
               <Volume2 className="h-5 w-5" />
             </Button>
@@ -100,9 +111,7 @@ const IndexContent = () => {
               variant="ghost"
               size="icon"
               onClick={() => handleSoundToggle('forest')}
-              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${
-                activeSound === 'forest' ? 'bg-white/20' : ''
-              }`}
+              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${activeSound === 'forest' ? 'bg-white/20' : ''}`}
             >
               <Trees className="h-5 w-5" />
             </Button>
@@ -110,9 +119,7 @@ const IndexContent = () => {
               variant="ghost"
               size="icon"
               onClick={() => handleSoundToggle('rain')}
-              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${
-                activeSound === 'rain' ? 'bg-white/20' : ''
-              }`}
+              className={`opacity-90 hover:opacity-100 hover:bg-white/10 ${activeSound === 'rain' ? 'bg-white/20' : ''}`}
             >
               <Cloud className="h-5 w-5" />
             </Button>
@@ -148,4 +155,3 @@ const Index = () => (
 );
 
 export default Index;
-
