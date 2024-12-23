@@ -42,20 +42,21 @@ const QuoteButton = () => {
       }
     : {
         fontFamily,
-        color: fontColor,
+        color: fontColor || "black", // Default to black if no fontColor is set
       };
 
   return (
     <Button
       onClick={showNewQuote}
       variant="outline"
-      className="fixed bottom-4 right-16 h-8 px-2 gap-1"
-      style={textStyle}
+      className="fixed bottom-4 right-[94px] h-8 px-2 gap-1" // Adjusted right margin
+      style={{ ...textStyle, color: "black" }} // Explicitly set font color to black
     >
       <Quote className="h-4 w-4" />
       Quote
     </Button>
   );
 };
+
 
 export default QuoteButton;
