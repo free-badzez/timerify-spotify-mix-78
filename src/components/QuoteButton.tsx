@@ -33,10 +33,10 @@ const QuoteButton = () => {
     <Button
       onClick={showNewQuote}
       variant="outline"
-      className="fixed bottom-4 left-4 gap-2"
+      className="fixed bottom-4 right-4 h-8 px-2 gap-1"
     >
       <Quote className="h-4 w-4" />
-      Get Quote
+      Quote
     </Button>
   );
 };

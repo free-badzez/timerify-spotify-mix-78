@@ -28,6 +28,7 @@ interface SettingsContextType {
   setSpotifyPlaylistUrl: (url: string) => void;
   alertSound: string;
   setAlertSound: (sound: string) => void;
+  playAlertSound: () => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -47,6 +48,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   });
   const [spotifyPlaylistUrl, setSpotifyPlaylistUrl] = useState('4d3PqXgP9C9GhdmHsuztXx');
   const [alertSound, setAlertSound] = useState('bell');
+
+  const playAlertSound = () => {
+    const audio = new Audio(`/sounds/${alertSound}.mp3`);
+    audio.play().catch(error => {
+      console.error('Error playing sound:', error);
+    });
+  };
 
   return (
     <SettingsContext.Provider
@@ -71,6 +79,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setSpotifyPlaylistUrl,
         alertSound,
         setAlertSound,
+        playAlertSound,
       }}
     >
       {children}
