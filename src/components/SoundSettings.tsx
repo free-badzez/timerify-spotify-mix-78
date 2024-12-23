@@ -9,7 +9,7 @@ const SoundSettings = () => {
 
   // Function to play the selected sound
   const playSound = (sound: string) => {
-    const audio = new Audio(`/sounds/${sound}.mp3`); // Plays the sound from the 'public/sounds' directory
+    const audio = new Audio(`/sounds/${sound}.mp3`); // Plays sound from 'public/sounds'
     audio.play();
   };
 
