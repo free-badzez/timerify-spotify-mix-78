@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const SpotifyEmbed = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const { showSpotify } = useSettings();
 
-  if (!isVisible) return null;
+  if (!showSpotify) return null;
 
   return (
     <div className="w-full max-w-sm mx-auto fixed bottom-4 left-4">

@@ -1,9 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useSettings } from "@/contexts/SettingsContext";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -11,11 +13,45 @@ interface SettingsDialogProps {
 }
 
 const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
+  const {
+    showSpotify,
+    setShowSpotify,
+    background,
+    setBackground,
+    backgroundType,
+    setBackgroundType,
+    fontColor,
+    setFontColor,
+    fontFamily,
+    setFontFamily,
+  } = useSettings();
+  const { toast } = useToast();
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setBackground(url);
+      setBackgroundType(file.type.startsWith('video/') ? 'video' : 'image');
+    }
+  };
+
+  const handleSaveChanges = () => {
+    toast({
+      title: "Settings saved",
+      description: "Your changes have been applied successfully.",
+    });
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-[#1A1A1A] text-white border-none max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white">Settings</DialogTitle>
+          <DialogDescription className="text-white/60">
+            Customize your timer experience
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -35,20 +71,55 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                     <SelectItem value="ocean">Ocean Breeze</SelectItem>
                     <SelectItem value="forest">Forest Mist</SelectItem>
                     <SelectItem value="sunset">Sunset Glow</SelectItem>
+                    <SelectItem value="cyberpunk">Cyberpunk</SelectItem>
+                    <SelectItem value="minimal">Minimal White</SelectItem>
+                    <SelectItem value="nature">Nature Green</SelectItem>
+                    <SelectItem value="space">Space Dark</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-4">
-                <Label>Background Video</Label>
+                <Label>Background Media</Label>
                 <Input
                   type="file"
-                  accept="video/*"
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
                   className="bg-black/50 border-white/10 text-white"
                 />
                 <p className="text-sm text-white/60">
-                  Upload a short video loop to play in the background
+                  Upload an image or video for background
                 </p>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Font Settings</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Font Color</Label>
+                    <Input
+                      type="color"
+                      value={fontColor}
+                      onChange={(e) => setFontColor(e.target.value)}
+                      className="h-10 p-1 bg-black/50 border-white/10"
+                    />
+                  </div>
+                  <div>
+                    <Label>Font Family</Label>
+                    <Select value={fontFamily} onValueChange={setFontFamily}>
+                      <SelectTrigger className="bg-black/50 border-white/10 text-white">
+                        <SelectValue placeholder="Select font" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1A1A1A] text-white border-white/10">
+                        <SelectItem value="Inter">Inter</SelectItem>
+                        <SelectItem value="Roboto">Roboto</SelectItem>
+                        <SelectItem value="Poppins">Poppins</SelectItem>
+                        <SelectItem value="Montserrat">Montserrat</SelectItem>
+                        <SelectItem value="Open Sans">Open Sans</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -57,31 +128,37 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
             <div className="font-medium">Notifications</div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label>Show browser notifications</Label>
-                <Switch />
-              </div>
-
-              <div className="flex items-center justify-between">
                 <Label>Show Spotify playlist</Label>
-                <Switch />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <Label>Play sound on completion</Label>
-                <Switch />
+                <Switch
+                  checked={showSpotify}
+                  onCheckedChange={setShowSpotify}
+                />
               </div>
             </div>
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button variant="destructive" className="bg-red-500/20 text-red-500 hover:bg-red-500/30">
+            <Button
+              variant="destructive"
+              className="bg-red-500/20 text-red-500 hover:bg-red-500/30"
+              onClick={() => {
+                setShowSpotify(true);
+                setBackground('');
+                setFontColor('#FFFFFF');
+                setFontFamily('Inter');
+              }}
+            >
               Reset all
             </Button>
             <div className="space-x-2">
-              <Button variant="outline" className="text-white bg-white/10 hover:bg-white/20">
-                Close
+              <Button
+                variant="outline"
+                className="text-white bg-white/10 hover:bg-white/20"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
               </Button>
-              <Button>Save changes</Button>
+              <Button onClick={handleSaveChanges}>Save changes</Button>
             </div>
           </div>
         </div>
