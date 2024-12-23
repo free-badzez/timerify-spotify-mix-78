@@ -11,6 +11,13 @@ interface SettingsContextType {
   setFontColor: (color: string) => void;
   fontFamily: string;
   setFontFamily: (font: string) => void;
+  gradientColors: {
+    from: string;
+    to: string;
+  };
+  setGradientColors: (colors: { from: string; to: string }) => void;
+  useGradient: boolean;
+  setUseGradient: (use: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -21,6 +28,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [backgroundType, setBackgroundType] = useState<'image' | 'video'>('image');
   const [fontColor, setFontColor] = useState('#FFFFFF');
   const [fontFamily, setFontFamily] = useState('Inter');
+  const [gradientColors, setGradientColors] = useState({ from: '#FFFFFF', to: '#FFFFFF' });
+  const [useGradient, setUseGradient] = useState(false);
 
   return (
     <SettingsContext.Provider
@@ -35,6 +44,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setFontColor,
         fontFamily,
         setFontFamily,
+        gradientColors,
+        setGradientColors,
+        useGradient,
+        setUseGradient,
       }}
     >
       {children}

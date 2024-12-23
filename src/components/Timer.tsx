@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Play, RotateCcw, Timer as TimerIcon } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface TimerProps {
   mode: 'pomodoro' | 'shortBreak' | 'longBreak';
@@ -81,9 +82,27 @@ const Timer = ({ mode }: TimerProps) => {
     });
   };
 
+  const { fontFamily, fontColor, useGradient, gradientColors } = useSettings();
+
+  const textStyle = useGradient
+    ? {
+        fontFamily,
+        backgroundImage: `linear-gradient(to right, ${gradientColors.from}, ${gradientColors.to})`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      }
+    : {
+        fontFamily,
+        color: fontColor,
+      };
+
   return (
     <div className="text-center">
-      <div className="text-[8rem] font-light text-white mb-8 font-mono tracking-wider">
+      <div 
+        className="text-[8rem] font-light mb-8 font-mono tracking-wider"
+        style={textStyle}
+      >
         {formatTime(time)}
       </div>
       
@@ -92,6 +111,7 @@ const Timer = ({ mode }: TimerProps) => {
           size="lg"
           onClick={handleStartStop}
           className="bg-white text-black hover:bg-white/90 rounded-full px-8"
+          style={{ fontFamily }}
         >
           {isRunning ? (
             "pause"
@@ -108,6 +128,7 @@ const Timer = ({ mode }: TimerProps) => {
           variant="ghost"
           onClick={handleLap}
           className="text-white hover:bg-white/10"
+          style={{ fontFamily }}
         >
           <TimerIcon className="h-4 w-4" />
         </Button>
@@ -117,13 +138,14 @@ const Timer = ({ mode }: TimerProps) => {
           variant="ghost"
           onClick={handleReset}
           className="text-white hover:bg-white/10"
+          style={{ fontFamily }}
         >
           <RotateCcw className="h-4 w-4" />
         </Button>
       </div>
 
       {laps.length > 0 && (
-        <div className="mt-8 text-white/80">
+        <div className="mt-8" style={textStyle}>
           <h3 className="text-sm font-medium mb-2">Laps</h3>
           <div className="space-y-1">
             {laps.map((lap, index) => (

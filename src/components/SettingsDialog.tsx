@@ -24,6 +24,10 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     setFontColor,
     fontFamily,
     setFontFamily,
+    gradientColors,
+    setGradientColors,
+    useGradient,
+    setUseGradient,
   } = useSettings();
   const { toast } = useToast();
 
@@ -94,16 +98,7 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
 
               <div className="space-y-4">
                 <Label>Font Settings</Label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Font Color</Label>
-                    <Input
-                      type="color"
-                      value={fontColor}
-                      onChange={(e) => setFontColor(e.target.value)}
-                      className="h-10 p-1 bg-black/50 border-white/10"
-                    />
-                  </div>
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <Label>Font Family</Label>
                     <Select value={fontFamily} onValueChange={setFontFamily}>
@@ -116,8 +111,56 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                         <SelectItem value="Poppins">Poppins</SelectItem>
                         <SelectItem value="Montserrat">Montserrat</SelectItem>
                         <SelectItem value="Open Sans">Open Sans</SelectItem>
+                        <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                        <SelectItem value="Lora">Lora</SelectItem>
+                        <SelectItem value="Source Code Pro">Source Code Pro</SelectItem>
+                        <SelectItem value="Space Grotesk">Space Grotesk</SelectItem>
+                        <SelectItem value="DM Sans">DM Sans</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Use Gradient Text</Label>
+                      <Switch
+                        checked={useGradient}
+                        onCheckedChange={setUseGradient}
+                      />
+                    </div>
+                    
+                    {useGradient ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Gradient From</Label>
+                          <Input
+                            type="color"
+                            value={gradientColors.from}
+                            onChange={(e) => setGradientColors({ ...gradientColors, from: e.target.value })}
+                            className="h-10 p-1 bg-black/50 border-white/10"
+                          />
+                        </div>
+                        <div>
+                          <Label>Gradient To</Label>
+                          <Input
+                            type="color"
+                            value={gradientColors.to}
+                            onChange={(e) => setGradientColors({ ...gradientColors, to: e.target.value })}
+                            className="h-10 p-1 bg-black/50 border-white/10"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <Label>Solid Color</Label>
+                        <Input
+                          type="color"
+                          value={fontColor}
+                          onChange={(e) => setFontColor(e.target.value)}
+                          className="h-10 p-1 bg-black/50 border-white/10"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -146,6 +189,8 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                 setBackground('');
                 setFontColor('#FFFFFF');
                 setFontFamily('Inter');
+                setUseGradient(false);
+                setGradientColors({ from: '#FFFFFF', to: '#FFFFFF' });
               }}
             >
               Reset all
