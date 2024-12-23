@@ -1,11 +1,17 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Timer from "@/components/Timer";
+import SpotifyEmbed from "@/components/SpotifyEmbed";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gradient-to-br from-timer-purple/20 to-timer-teal/20">
+      <div className="container py-12">
+        <h1 className="text-4xl font-bold text-center mb-12 text-timer-purple">
+          Workout Timer
+        </h1>
+        <div className="grid gap-8 md:grid-cols-2">
+          <Timer />
+          <SpotifyEmbed />
+        </div>
       </div>
     </div>
   );
