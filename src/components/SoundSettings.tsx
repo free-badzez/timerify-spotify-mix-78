@@ -22,9 +22,9 @@ const SoundSettings = () => {
           { value: 'alert', label: 'Alert Sound' },
           { value: 'chime', label: 'Chime Sound' }
         ].map((sound) => (
-          <div key={sound.value} className="flex items-center justify-between p-2 rounded bg-black/20">
+          <div key={sound.value} className="flex items-center justify-between p-2 rounded bg-white/10">
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value={sound.value} id={sound.value} className="border-white/50" />
+              <RadioGroupItem value={sound.value} id={sound.value} className="border-white data-[state=checked]:bg-white" />
               <Label htmlFor={sound.value} className="text-white">{sound.label}</Label>
             </div>
             <Button

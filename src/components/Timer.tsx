@@ -9,7 +9,7 @@ interface TimerProps {
 }
 
 const Timer = ({ mode }: TimerProps) => {
-  const { timerDurations, fontFamily, fontColor, useGradient, gradientColors } = useSettings();
+  const { timerDurations, fontFamily, fontColor, useGradient, gradientColors, playAlertSound } = useSettings();
   
   const getInitialTime = () => {
     switch (mode) {
@@ -39,9 +39,11 @@ const Timer = ({ mode }: TimerProps) => {
         setTime((prevTime) => {
           if (prevTime <= 1) {
             setIsRunning(false);
+            playAlertSound();
             toast({
               title: "Timer Complete",
               description: "Time to take a break!",
+              duration: 3000,
             });
             return 0;
           }
@@ -50,7 +52,7 @@ const Timer = ({ mode }: TimerProps) => {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning, time, toast]);
+  }, [isRunning, time, toast, playAlertSound]);
 
   const formatTime = useCallback((timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -63,6 +65,7 @@ const Timer = ({ mode }: TimerProps) => {
     toast({
       title: !isRunning ? "Timer Started" : "Timer Paused",
       description: !isRunning ? "Stay focused!" : "Timer has been paused",
+      duration: 3000,
     });
   };
 
@@ -73,6 +76,7 @@ const Timer = ({ mode }: TimerProps) => {
     toast({
       title: "Timer Reset",
       description: "Timer has been reset",
+      duration: 3000,
     });
   };
 
@@ -81,6 +85,7 @@ const Timer = ({ mode }: TimerProps) => {
     toast({
       title: "Lap Recorded",
       description: `Lap time: ${formatTime(time)}`,
+      duration: 3000,
     });
   };
 
