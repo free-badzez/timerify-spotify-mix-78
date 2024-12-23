@@ -9,14 +9,16 @@ interface TimerProps {
 }
 
 const Timer = ({ mode }: TimerProps) => {
+  const { timerDurations, fontFamily, fontColor, useGradient, gradientColors } = useSettings();
+  
   const getInitialTime = () => {
     switch (mode) {
       case 'shortBreak':
-        return 5 * 60; // 5 minutes
+        return timerDurations.shortBreak * 60;
       case 'longBreak':
-        return 15 * 60; // 15 minutes
+        return timerDurations.longBreak * 60;
       default:
-        return 25 * 60; // 25 minutes
+        return timerDurations.pomodoro * 60;
     }
   };
 
@@ -81,8 +83,6 @@ const Timer = ({ mode }: TimerProps) => {
       description: `Lap time: ${formatTime(time)}`,
     });
   };
-
-  const { fontFamily, fontColor, useGradient, gradientColors } = useSettings();
 
   const textStyle = useGradient
     ? {

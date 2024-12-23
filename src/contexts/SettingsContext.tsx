@@ -18,6 +18,14 @@ interface SettingsContextType {
   setGradientColors: (colors: { from: string; to: string }) => void;
   useGradient: boolean;
   setUseGradient: (use: boolean) => void;
+  timerDurations: {
+    pomodoro: number;
+    shortBreak: number;
+    longBreak: number;
+  };
+  setTimerDurations: (durations: { pomodoro: number; shortBreak: number; longBreak: number }) => void;
+  spotifyPlaylistUrl: string;
+  setSpotifyPlaylistUrl: (url: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -30,6 +38,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [fontFamily, setFontFamily] = useState('Inter');
   const [gradientColors, setGradientColors] = useState({ from: '#FFFFFF', to: '#FFFFFF' });
   const [useGradient, setUseGradient] = useState(false);
+  const [timerDurations, setTimerDurations] = useState({
+    pomodoro: 25,
+    shortBreak: 5,
+    longBreak: 15
+  });
+  const [spotifyPlaylistUrl, setSpotifyPlaylistUrl] = useState('4d3PqXgP9C9GhdmHsuztXx');
 
   return (
     <SettingsContext.Provider
@@ -48,6 +62,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setGradientColors,
         useGradient,
         setUseGradient,
+        timerDurations,
+        setTimerDurations,
+        spotifyPlaylistUrl,
+        setSpotifyPlaylistUrl,
       }}
     >
       {children}

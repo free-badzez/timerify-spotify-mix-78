@@ -28,6 +28,10 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     setGradientColors,
     useGradient,
     setUseGradient,
+    timerDurations,
+    setTimerDurations,
+    spotifyPlaylistUrl,
+    setSpotifyPlaylistUrl,
   } = useSettings();
   const { toast } = useToast();
 
@@ -48,6 +52,15 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     onOpenChange(false);
   };
 
+  const handleSpotifyUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const url = event.target.value;
+    // Extract playlist ID from URL or use as is
+    const playlistId = url.includes('spotify.com') 
+      ? url.split('/').pop()?.split('?')[0] 
+      : url;
+    setSpotifyPlaylistUrl(playlistId || '');
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-[#1A1A1A] text-white border-none max-h-[80vh] overflow-y-auto">
@@ -59,6 +72,75 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
         </DialogHeader>
 
         <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="font-medium">Timer Settings</div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>Pomodoro (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={timerDurations.pomodoro}
+                  onChange={(e) => setTimerDurations({
+                    ...timerDurations,
+                    pomodoro: parseInt(e.target.value) || 25
+                  })}
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              <div>
+                <Label>Short Break (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={timerDurations.shortBreak}
+                  onChange={(e) => setTimerDurations({
+                    ...timerDurations,
+                    shortBreak: parseInt(e.target.value) || 5
+                  })}
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              <div>
+                <Label>Long Break (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={timerDurations.longBreak}
+                  onChange={(e) => setTimerDurations({
+                    ...timerDurations,
+                    longBreak: parseInt(e.target.value) || 15
+                  })}
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="font-medium">Spotify Settings</div>
+            <div>
+              <Label>Spotify Playlist URL or ID</Label>
+              <Input
+                type="text"
+                value={spotifyPlaylistUrl}
+                onChange={handleSpotifyUrlChange}
+                placeholder="Enter Spotify playlist URL or ID"
+                className="bg-black/50 border-white/10 text-white"
+              />
+              <p className="text-sm text-white/60 mt-1">
+                Paste a Spotify playlist URL or just the playlist ID
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <Label>Show Spotify player</Label>
+              <Switch
+                checked={showSpotify}
+                onCheckedChange={setShowSpotify}
+              />
+            </div>
+          </div>
+
           <div className="space-y-4">
             <div className="font-medium">Theme</div>
             <div className="space-y-4">
@@ -167,19 +249,6 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="font-medium">Notifications</div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label>Show Spotify playlist</Label>
-                <Switch
-                  checked={showSpotify}
-                  onCheckedChange={setShowSpotify}
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="flex justify-between pt-4">
             <Button
               variant="destructive"
@@ -191,6 +260,8 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                 setFontFamily('Inter');
                 setUseGradient(false);
                 setGradientColors({ from: '#FFFFFF', to: '#FFFFFF' });
+                setTimerDurations({ pomodoro: 25, shortBreak: 5, longBreak: 15 });
+                setSpotifyPlaylistUrl('4d3PqXgP9C9GhdmHsuztXx');
               }}
             >
               Reset all

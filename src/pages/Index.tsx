@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Timer from "@/components/Timer";
 import SpotifyEmbed from "@/components/SpotifyEmbed";
-import { Settings, Volume2, Trees, Cloud } from "lucide-react";
+import { Settings, Volume2, Trees, Cloud, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TimerModeSelector from "@/components/TimerModeSelector";
 import SettingsDialog from "@/components/SettingsDialog";
@@ -27,6 +27,26 @@ const IndexContent = () => {
       toast({
         title: "Sound playing",
         description: `Now playing ${sound} sound`,
+      });
+    }
+  };
+
+  const handlePictureInPicture = async () => {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        const pipContainer = document.getElementById('pip-container');
+        if (pipContainer) {
+          // @ts-ignore: Typescript doesn't know about the experimental API
+          await pipContainer.requestPictureInPicture();
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Picture in Picture mode is not supported in your browser",
+        variant: "destructive",
       });
     }
   };
@@ -95,6 +115,14 @@ const IndexContent = () => {
             <Button
               variant="ghost"
               size="icon"
+              onClick={handlePictureInPicture}
+              className="opacity-90 hover:opacity-100 hover:bg-white/10"
+            >
+              <Maximize2 className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setShowSettings(true)}
               className="opacity-90 hover:opacity-100 hover:bg-white/10"
             >
@@ -103,7 +131,7 @@ const IndexContent = () => {
           </div>
         </header>
 
-        <div className="flex flex-col items-center justify-center gap-8">
+        <div id="pip-container" className="flex flex-col items-center justify-center gap-8">
           <TimerModeSelector mode={mode} onModeChange={setMode} />
           <Timer mode={mode} />
           <SpotifyEmbed />
