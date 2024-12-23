@@ -32,17 +32,18 @@ const ControlButtons = () => {
     ? {
         fontFamily,
         backgroundImage: `linear-gradient(to right, ${gradientColors.from}, ${gradientColors.to})`,
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        backgroundClip: "text",
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        color: "black", // Explicitly set color to black
       }
     : {
         fontFamily,
-        color: fontColor || "black", // Default to black if not provided
+        color: "black", // Ensure color is always black
       };
 
   return (
-    <div className="fixed bottom-4 right-16"> {/* Adjusted position */}
+    <div className="fixed bottom-4 right-4">
       <Button
         onClick={toggleFullscreen}
         variant="outline"
@@ -50,7 +51,7 @@ const ControlButtons = () => {
         style={textStyle}
       >
         <Maximize2 className="h-4 w-4" />
-        {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"} {/* Clearer text */}
+        {isFullscreen ? "Exit" : "Full"}
       </Button>
     </div>
   );
