@@ -17,14 +17,36 @@ const IndexContent = () => {
   const { toast } = useToast();
   const { background, backgroundType, fontColor, fontFamily } = useSettings();
 
+  // Add audio functionality
+  const sounds = {
+    waves: new Audio("/audio/waves.mp3"), // Replace with your actual audio file paths
+    forest: new Audio("/audio/forest.mp3"),
+    rain: new Audio("/audio/rain.mp3"),
+  };
+
+  // Ensure sounds play in a loop
+  Object.values(sounds).forEach((sound) => {
+    sound.loop = true;
+  });
+
   const handleSoundToggle = (sound: string) => {
     if (activeSound === sound) {
+      // Stop the currently active sound
+      sounds[sound].pause();
+      sounds[sound].currentTime = 0; // Reset playback to the start
       setActiveSound(null);
       toast({
         title: "Sound stopped",
         description: `${sound} sound has been stopped`,
       });
     } else {
+      // Stop any currently playing sound
+      if (activeSound) {
+        sounds[activeSound].pause();
+        sounds[activeSound].currentTime = 0;
+      }
+      // Play the selected sound
+      sounds[sound].play();
       setActiveSound(sound);
       toast({
         title: "Sound playing",
@@ -126,3 +148,4 @@ const Index = () => (
 );
 
 export default Index;
+
